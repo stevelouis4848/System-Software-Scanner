@@ -13,9 +13,20 @@ README
 #include <stdlib.h>
 #include <stdio.h>
 
+
 int IDENTIFIER_MAX_LENGTH = 11;
 int NUMBER_MAX_LENGTH = 5;
 int TABLE_SIZE = 33;
+
+typedef struct listyString{
+							int position;
+							char c;
+							struct listyString *head;
+							struct listyString *tail;
+							
+}listyString;
+
+
 
 char table[] = {"NULL",'','','','','*','/','','+','-','*','/','','=','-',
 					'<','<=','>','>=','(',')',',',';','.','','begin','end',
@@ -38,16 +49,36 @@ int main(int argc, char **argv){
 void scanner(char *fileName){
 	
 	FILE *ifp, *ofp, *ofp2;
-	char buffer[11];
-	
-	
+	char buffer;
+	listyString *input, *newNode;
+	int i = 0;;
+		
+	input = malloc(sizeof(listyString));
+		
 	ifp = (filename,"r");
 	ofp = (,"w");
 	ofp2 = ("r");
 	
-	while(fscanf(ifp, %s, &buffer) != EOF){
+	input->head = input;
+	input->position = 0;
+	lastPosition 
+	
+	while(fscanf(ifp, %c, &buffer) != EOF){
 		
+		i++;
 		
+		newNode = malloc(sizeof(listyString));
+		
+		newNode->head = input;
+		newNode->c = *buffer;
+		newNode->position = i;
+		
+		newNode = NULL;
 	}
+	
+}
+
+void Encoder(){listyString *input
+	
 	
 }
