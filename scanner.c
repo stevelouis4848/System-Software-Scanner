@@ -81,13 +81,25 @@ void scanner(char *fileName){
 
 void encoder(listyString* inputHead, FILE *ofp){
 	
-	if(isalpha(inputHead->c ) == 1){
+	listyString *temporaryHead;
+	
+	temporaryHead = inputHead;
+	
+	if(isalpha(temporaryHead->c ) == 1){
 		
-		while(isdigit(inputHead->c ) == 1 || isalpha(inputHead->c ) == 1 )
+		
+		temporaryHead = temporaryHead->next;
+		
+		while(isdigit(temporaryHead->c ) == 1 || isalpha(temporaryHead->c ) == 1 ){
+			
+			temporaryHead = temporaryHead->next;			
+		}
 		
 	}
 	
-	ifelse(isdigit(inputHead->c ) == 1){
+	if else(isdigit(inputHead->c ) == 1){
+		
+		
 		
 	}
 	
