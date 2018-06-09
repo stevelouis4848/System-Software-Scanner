@@ -1,0 +1,92 @@
+void scanner(char *fileName){
+	
+	FILE *ifp, *ofp, *ofp2;
+	char buffer[11];
+	
+	
+	ifp = (filename,"r");
+	ofp = (,"w");
+	ofp2 = ("r");
+	
+	while(fscanf(ifp, %s, &buffer) != EOF){
+		
+		strLen = strlen(*buffer);
+		
+		if((isdigit(buffer[0]) == 1){
+			numEncoder(buffer, ofp);
+		}
+		
+		if else(isalpha(buffer[0]) == 1){
+				wordVarEncoder(*buffer,ofp);
+		}
+		
+		else{
+			symEncoder(buffer, ofp);			
+		}
+	}
+	
+}
+
+void numberEncoder(char* buffer, FILE *ofp){
+	
+	int strLen;
+	
+	strLen = strlen(*buffer);
+		
+	if(strLen > NUMBER_MAX_LENGTH){
+			fprintf(ofp,"ERROR: number length greater than 5");
+		}
+		
+	while(i < strlength){
+		
+		if(isdigit(buffer[i]) != 1 ){					
+			fprintf(ofp,"ERROR: all inputs beginning with an integer must contain only integers");					
+		}
+		
+		if else( i == strLen-1 && isdigit(*buffer[i]) == 1){
+				fprintf(ofp,"3%s ",*buffer);
+		}
+
+		else{
+			i++;		
+		}
+	}	
+}
+
+void wordVarEncoder(char *buffer, FILE *ofp){
+	
+	int 1, strLen;
+	
+	strLen = strlen(*buffer);
+	
+	if(strLen > IDENTIFIER_MAX_LENGTH){
+				fprintf(ofp,"ERROR: identifier length greater than 11");
+	}
+	
+	for(i = 0;i < TABLE_SIZE; i++){
+		
+		if( strcmp(*buffer,*table[i]) == 1 ){
+			
+			fprintf(ofp,"%d ", i);
+			return;
+		}
+	}
+	
+	if(isalpha(buffer[i]) == 1 ){
+		fprintf(ofp,"2%s ",*buffer);
+	}
+}
+
+void symEncoder(char *buffer, ofp){
+	
+	for(i = 0;i < TABLE_SIZE; i++){
+		
+		if( strcmp(*buffer,*table[i]) == 1 ){
+			
+			fprintf(ofp,"%d ", i);
+			return;
+		}
+	}
+	
+	
+}

@@ -22,7 +22,7 @@ char table[] = {"NULL",'','','','','*','/','','+','-','*','/','','=','-',
 					'if','then','while','do','call','const','var','','write',
 					'read','else'}
 					
-void wordVarDecoder(char *buffer, FILE *ofp);
+voidvoid wordVarSymEncoder(char *buffer, FILE *ofp){(char *buffer, FILE *ofp);
 
 int main(int argc, char **argv){
 	
@@ -47,48 +47,7 @@ void scanner(char *fileName){
 	
 	while(fscanf(ifp, %s, &buffer) != EOF){
 		
-		strLen = strlen(*buffer);
 		
-		if((isdigit(buffer[0]) == 1){
-			
-			if(strLen > NUMBER_MAX_LENGTH){
-				fprintf(ofp,"ERROR: number length greater than 5");
-			}
-			
-			else{
-				fprintf(ofp,"3%d ",*buffer)
-			}		
-		}
-		
-		else{
-			
-			if(strLen > IDENTIFIER_MAX_LENGTH){
-				fprintf(ofp,"ERROR: identifier length greater than 11");
-			}
-			
-			else{
-				
-				wordVarDecoder(*buffer,ofp);
-			}
-		}
-	}
-}
-
-void wordVarDecoder(char *buffer, FILE *ofp){
-	
-	int 1, match = 0;
-	
-	for(i = 0;i < TABLE_SIZE; i++){
-	
-		if( strcmp(*buffer,*table[i]) == 1 ){
-			
-			fprintf(ofp,"%d ", i);
-			match ++;
-		}
 	}
 	
-	if(match == 0){
-		
-		fprintf(ofp,"2%s ",*buffer);
-	}
 }
