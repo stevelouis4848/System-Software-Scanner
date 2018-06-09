@@ -19,14 +19,11 @@ int NUMBER_MAX_LENGTH = 5;
 int TABLE_SIZE = 33;
 
 typedef struct listyString{
-							int position;
+							int size;
 							char c;
 							struct listyString *head;
-							struct listyString *tail;
-							
+							struct listyString *next;						
 }listyString;
-
-
 
 char table[] = {"NULL",'','','','','*','/','','+','-','*','/','','=','-',
 					'<','<=','>','>=','(',')',',',';','.','','begin','end',
@@ -50,35 +47,53 @@ void scanner(char *fileName){
 	
 	FILE *ifp, *ofp, *ofp2;
 	char buffer;
-	listyString *input, *newNode;
+	listyString *inputHead, *newNode, *prevNode;
 	int i = 0;;
 		
-	input = malloc(sizeof(listyString));
+	inputHead = malloc(sizeof(listyString));
 		
 	ifp = (filename,"r");
 	ofp = (,"w");
 	ofp2 = ("r");
 	
-	input->head = input;
-	input->position = 0;
-	lastPosition 
+	inputHead->head = inputHead;
+	inputHead->size = i;
 	
-	while(fscanf(ifp, %c, &buffer) != EOF){
+	prevNode = inputHead;
+	
+	while(fscanf(ifp, %c, &buffer) != EOF){		
 		
 		i++;
 		
 		newNode = malloc(sizeof(listyString));
 		
-		newNode->head = input;
+		newNode->head = inputHead;
 		newNode->c = *buffer;
-		newNode->position = i;
+		newNode->size = i;
 		
+		prevNode->next = newNode;
+		prevNode = newNode;
 		newNode = NULL;
 	}
 	
+	encoder(inputHead,ofp);	
 }
 
-void Encoder(){listyString *input
+void encoder(listyString* inputHead, FILE *ofp){
 	
+	if(isalpha(inputHead->c ) == 1){
+		
+		while(isdigit(inputHead->c ) == 1 || isalpha(inputHead->c ) == 1 )
+		
+	}
 	
+	ifelse(isdigit(inputHead->c ) == 1){
+		
+	}
+	
+	else{
+		
+		
+	}
 }
+
