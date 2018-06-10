@@ -80,8 +80,8 @@ void scanner(char *fileName){
 void encoder(listyString* inputHead, FILE *ofp){
 	
 	int i, j;
-	char *bufferChar;
-	int *bufferInt;
+	char *bufferChar, *prevBufferChar;
+	int *bufferInt, *prevBufferInt;
 	listyString *temporaryHead;
 	
 	
@@ -93,59 +93,144 @@ void encoder(listyString* inputHead, FILE *ofp){
 		
 	if(isalpha(inputHead-->c ) != 0){
 			
-		temporaryHead = inputhead;
-		for( i = 0;isdigit(temporaryHead->c ) != 0 || isalpha(temporaryHead->c ) != 0; i++){
+		wordVarEncoder();
+	}
+	
+	if else(isdigit(inputHead->c ) != 0){
+		
+		intEncoder();
+	}
+	
+	else{
+		
+		symEncoder();	
+		
+	}
+}
+
+void stringCopy(char *str1, char *str2, int length){
+	
+	int i;
+	
+	for(i = 0; j < length; i++){
+				
+				str2[i] = str1[i];
+			}
+}
+
+void intCopy(int *str1, int *str2, int length){
+	
+	int i;
+	
+	for(i = 0; j < length; i++){
+				
+				str2[i] = str1[i];
+	}
+}
+
+void intEncoder(){
+	
+	temporaryHead = inputhead;
+		
+		prevBufferInt = malloc(i + 1 * sizeof(char));
+		prevBufferInt[i] = temporaryHead->c;
+		temporaryHead = temporaryHead->next
+		
+		for(i = 1; isdigit(temporaryHead->c != 0); i++){
 			
-			bufferChar = malloc(i + 1 * sizeof(char));
+			bufferInt = malloc(i + 2 * sizeof(int));
+			
+			intCopy(prevBufferInt, bufferInt, int i);
+						
+			bufferInt[i] = temporaryHead->c;
+			temporaryHead = temporaryHead->next;			
+		}
+		
+		if(i > NUMBER_MAX_LENGTH){
+			
+			printf("ERROR:number too long ",);
+			encoder(temporaryHead,ofp);
+		}
+		
+		else{
+			
+			for(j = 0;j < i; j++){
+				
+				printf("3%d ", bufferInt[j]);
+			}
+			
+			encoder(temporaryHead,ofp);
+		}
+	
+	
+]
+
+void wordVarEncoder(){
+	
+		temporaryHead = inputhead;
+		
+		prevBufferChar = malloc(i + 1 * sizeof(char));
+		prevBufferChar[i] = temporaryHead->c;
+		temporaryHead = temporaryHead->next
+		
+		for( i = 1;isdigit(temporaryHead->c ) != 0 || isalpha(temporaryHead->c ) != 0; i++){
+			
+			bufferChar = malloc(i + 2 * sizeof(char));
+			
+			stringCopy(prevBufferChar, bufferChar, i);
+			
 			bufferChar[i] = temporaryHead->c;
 			temporaryHead = temporaryHead->next;
 
 			for(j = 0; j < TABLE_SIZE; j++){
 				
-				if(strcmp(*bufferChar, *table[i]) != 0){
+				if(strcmp(*bufferChar, *table[j]) != 0){
 					
-					printf("%d ",i)
+					printf("%d ",j)
 					
 					encoder(temporaryHead,ofp);				
 				}				
-			}
-		}
-		
-		printf("2%s", *buffer);
-		encoder(remporaryHead, ofp);		
-	}
-	
-	if else(isdigit(inputHead->c ) != 0){
-		
-		temporaryHead = inputhead;
-		for(i = 0; isdigit(temporaryHead->c != 0); i++){
+			}	
+
+			free(prevBufferChar);
+			prevBufferChar = NULL;
 			
-			bufferInt = malloc(i + 1 * sizeof(int));
-			bufferInt[i] = temporaryHead->c;
-			temporaryHead = temporaryHead->next;			
+			prevBufferChar = malloc(i + 1 * sizeof(char));
+			
+			stringCopy(bufferChar, prevBufferChar, i);
+			
+			free(bufferChar);
+			bufferChar = NULL;
 		}
 		
-		printf("3%d ", *bufferInt);
-		encoder(temporaryHead,ofp);
-	}
-	
-	else{
+		if(i > NUMBER_MAX_LENGTH){
+			
+			printf("ERROR:variable too long ",);
+			encoder(temporaryHead,ofp);
+		}
 		
-		i = 0;
+		else{
+			
+			printf("2%s", *buffer);
+			encoder(remporaryHead, ofp);
+		}
+}
+
+void symEncoder(){
+	
+	= 0;
 		
 		bufferChar = malloc(sizeof(int))
 		temporaryHead = inputHead;
 		
-			bufferChar[i] = temporaryHead->c;
+		bufferChar[i] = temporaryHead->c;
 			
-			
+		i++;
+		
 		if(temporary->c == '<' || temporary->c == '>' && temporary->next->c == '=' ){
 		
 			
+			
 		
-		}
-		
-		
-	}
+		}	
 }
-
