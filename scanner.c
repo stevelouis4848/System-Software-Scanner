@@ -61,9 +61,7 @@ void scanner(char *fileName){
 	
 	prevNode = inputHead;
 	
-	while(fscanf(ifp, %c, &buffer) != EOF){		
-		
-		i++;
+	for (i = 1: fscanf(ifp, %c, &buffer) != EOF; i++){		
 		
 		newNode = malloc(sizeof(listyString));
 		
@@ -81,29 +79,71 @@ void scanner(char *fileName){
 
 void encoder(listyString* inputHead, FILE *ofp){
 	
+	int i, j;
+	char *bufferChar;
+	int *bufferInt;
 	listyString *temporaryHead;
 	
-	temporaryHead = inputHead;
 	
-	if(isalpha(temporaryHead->c ) == 1){
+	if(inputHead = NULL){
 		
+		printf("listyString is NULL");
+		return;
+	}
 		
-		temporaryHead = temporaryHead->next;
-		
-		while(isdigit(temporaryHead->c ) == 1 || isalpha(temporaryHead->c ) == 1 ){
+	if(isalpha(inputHead-->c ) != 0){
 			
+		temporaryHead = inputhead;
+		for( i = 0;isdigit(temporaryHead->c ) != 0 || isalpha(temporaryHead->c ) != 0; i++){
+			
+			bufferChar = malloc(i + 1 * sizeof(char));
+			bufferChar[i] = temporaryHead->c;
+			temporaryHead = temporaryHead->next;
+
+			for(j = 0; j < TABLE_SIZE; j++){
+				
+				if(strcmp(*bufferChar, *table[i]) != 0){
+					
+					printf("%d ",i)
+					
+					encoder(temporaryHead,ofp);				
+				}				
+			}
+		}
+		
+		printf("2%s", *buffer);
+		encoder(remporaryHead, ofp);		
+	}
+	
+	if else(isdigit(inputHead->c ) != 0){
+		
+		temporaryHead = inputhead;
+		for(i = 0; isdigit(temporaryHead->c != 0); i++){
+			
+			bufferInt = malloc(i + 1 * sizeof(int));
+			bufferInt[i] = temporaryHead->c;
 			temporaryHead = temporaryHead->next;			
 		}
 		
-	}
-	
-	if else(isdigit(inputHead->c ) == 1){
-		
-		
-		
+		printf("3%d ", *bufferInt);
+		encoder(temporaryHead,ofp);
 	}
 	
 	else{
+		
+		i = 0;
+		
+		bufferChar = malloc(sizeof(int))
+		temporaryHead = inputHead;
+		
+			bufferChar[i] = temporaryHead->c;
+			
+			
+		if(temporary->c == '<' || temporary->c == '>' && temporary->next->c == '=' ){
+		
+			
+		
+		}
 		
 		
 	}
