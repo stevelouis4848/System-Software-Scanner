@@ -344,7 +344,25 @@ void symEncoder(listyString *inputHead, FILE *ofp){
 	listyString *temporaryHead;
 			
 	temporaryHead = inputHead;
+	
+	if(temporary->Head == "//"){
 		
+		while (temporaryHead->next != NULL && temporary->c != "\n" ){
+			
+			temporaryHead = temporaryHead->next;
+			
+		}
+		
+		encoder(temporaryHead->next, ofp);
+	}
+	if(temporary->Head == "/*"){
+		
+		while (temporaryHead->next != NULL && temporaryHead->c != "*/" ){
+			
+			temporaryHead = temporaryHead->next;			
+		}
+		encoder(temporaryHead->next, ofp);
+	}
 	else if(temporaryHead ->c == "+"){		
 		printf("4\n");	
 		encoder(temporaryHead->next, ofp);
