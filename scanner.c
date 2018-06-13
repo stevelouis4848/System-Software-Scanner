@@ -21,9 +21,7 @@ int NUMBER_MAX_LENGTH = 5;
 int TABLE_SIZE = 33;
 
 typedef struct listyString{
-							int size;
-							char c;
-							struct listyString *head;
+							int c;
 							struct listyString *next;						
 }listyString;
 
@@ -44,6 +42,7 @@ int main(int argc, char **argv){
 	
 	int i;
 	
+	printf("main\n");
 	for(i = 1;i < argc; i++){
 		
 		scanner(argv[i]);				
@@ -53,72 +52,78 @@ int main(int argc, char **argv){
 
 void scanner(char *fileName){
 	
+	printf("scanner\n");
 	FILE *ifp, *ofp, *ofp2;
-	char *buffer;
+	int buffer;
+	
 	listyString *inputHead, *newNode, *prevNode;
-	int i = 0;
-		
-	buffer = malloc(sizeof(char));
+	
 	inputHead = malloc(sizeof(listyString));
 		
 	ifp = fopen(fileName,"r");
 	ofp = fopen("outputFile.txt","w");
 	//ofp2 = ("r");
-	
-	inputHead->head = inputHead;
-	inputHead->size = i;
-	
-	prevNode = inputHead;
-	
-	for (i = 1; fscanf(ifp, "%c", buffer) != EOF; i++){		
+
+	if ((buffer = fgetc(ifp)) != EOF){
+		
+		inputHead->c = buffer;
+		prevNode = inputHead;
+		printf("inside while Input: %c\n",prevNode->c);
+	}
+	while((buffer = fgetc(ifp)) != EOF){		
+		
+		
 		
 		newNode = malloc(sizeof(listyString));
 		
-		newNode->head = inputHead;
-		newNode->c = buffer[0];
-		newNode->size = i;
+		newNode->c = buffer;
 		
 		prevNode->next = newNode;
 		prevNode = newNode;
 		newNode = NULL;
+		printf("inside while Input: %c\n",prevNode->c);
 	}
-	
-	encoder(inputHead,ofp);	
+	encoder(inputHead, ofp);	
 }
 
 void encoder(listyString* inputHead, FILE *ofp){
-	
+	printf("encoder\n");
 	int i, j;
 	char *bufferChar, *prevBufferChar;
 	int *bufferInt, *prevBufferInt;
-	listyString *temporaryHead;
 	
-	
-	if(inputHead = NULL){
+	if(inputHead == NULL){
 		
-		printf("listyString is NULL");
+		printf("listyString is NULL\n");
+		fflush( stdout );
 		return;
 	}
-		
 	if(isalpha(inputHead->c ) != 0){
 			
-		wordVarEncoder(inputHead, ofp);
+		printf("wordVarEncoder\n");
+		fflush( stdout );
+		//wordVarEncoder(inputHead, ofp);
 	}
-	
 	else if(isdigit(inputHead->c ) != 0){
 		
-		intEncoder(inputHead, ofp);
+		printf("intEncoder\n");
+		fflush( stdout );
+		//intEncoder(inputHead, ofp);
 	}
 	
 	else{
 		
-		symEncoder(inputHead, ofp);	
+		printf("SymEncoder\n");
+		fflush( stdout );
+		//symEncoder(inputHead, ofp);	
 		
-	}
+	}	 
 }
 
+/*
 void intEncoder(listyString *inputHead, FILE *ofp){
 	
+	printf("intDecoder");
 	int i = 0, j = 0;;
 	
 	int *bufferInt, *prevBufferInt;
@@ -159,6 +164,7 @@ void intEncoder(listyString *inputHead, FILE *ofp){
 
 void wordVarEncoder(listyString *inputHead, FILE *ofp){
 	
+	printf("wordVarDecoder");
 	int i = 0, j = 0;
 	
 	char *bufferChar, *prevBufferChar;
@@ -214,7 +220,7 @@ void wordVarEncoder(listyString *inputHead, FILE *ofp){
 }
 
 void symEncoder(listyString *inputHead, FILE *ofp){
-	
+	printf("symDecoder");
 	listyString *temporaryHead;
 	char *bufferChar;
 	
@@ -233,7 +239,7 @@ void symEncoder(listyString *inputHead, FILE *ofp){
 }
 
 void stringCopy(char *str1, char *str2, int length){
-	
+	printf("stringCopy");
 	int i;
 	
 	for(i = 0; i < length; i++){
@@ -243,7 +249,7 @@ void stringCopy(char *str1, char *str2, int length){
 }
 
 void intCopy(int *str1, int *str2, int length){
-	
+	printf("intCopy");
 	int i;
 	
 	for(i = 0; i < length; i++){
@@ -251,4 +257,4 @@ void intCopy(int *str1, int *str2, int length){
 				str2[i] = str1[i];
 	}
 }
-
+*/
