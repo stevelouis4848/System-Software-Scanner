@@ -300,7 +300,8 @@ void intEncoder(listyString *inputHead, FILE *ofp){
 	
 	temporaryHead = temporaryHead->next;
 
-	for(i = 1; (temporaryHead != NULL) && (isdigit(temporaryHead->c != 0))  ; i++){
+	for(i = 1; (temporaryHead != NULL) && (isdigit(temporaryHead->c != 0)); i++){
+		
 		printf("intDecoder2\n");
 		bufferInt = malloc(i + 1 * sizeof(int));
 		bufferInt[i + 1] = '\0';
@@ -337,26 +338,67 @@ void intEncoder(listyString *inputHead, FILE *ofp){
 	
 }
 
-/*
+
 void symEncoder(listyString *inputHead, FILE *ofp){
 	printf("symDecoder");
 	listyString *temporaryHead;
-	char *bufferChar;
-	
-	int i = 0;
-		
-	bufferChar = malloc(sizeof(int));
+			
 	temporaryHead = inputHead;
-	
-	bufferChar[i] = temporaryHead->c;
 		
-	i++;
-	
-	if(temporaryHead->c == '<' || temporaryHead->c == '>' && temporaryHead->next->c == '=' ){
-		
+	else if(temporaryHead ->c == "+"){		
+		printf("4\n");	
+		encoder(temporaryHead->next, ofp);
 	}	
+	else if(temporaryHead ->c == "-"){
+		printf("5\n");
+		encoder(temporaryHead->next, ofp);				
+	}	
+	else if(temporaryHead ->c == "*"){		
+		printf("6\n");	
+		encoder(temporaryHead->next, ofp);
+	}
+	else if(temporaryHead ->c == "/"){		
+		printf("7\n");		
+	}	
+	else if(temporaryHead ->c == "%"){		
+		printf("8\n");		
+	}	
+	else if(temporaryHead ->c == "="){		
+		printf("9\n");		
+		encoder(temporaryHead->next, ofp);
+	}	
+	else if(temporaryHead ->c == "!="){	
+		printf("10\n");		
+		encoder(temporaryHead->next, ofp);
+	}
+	else if(temporaryHead ->c == "<"){	
+		if(temporaryHead->next != NULL && temporaryHead->next->c == "="){
+			printf("12 \n");			
+			encoder(temporaryHead->next->next, ofp);
+		}
+		else{
+			printf("11\n");	
+			encoder(temporaryHead->next, ofp);
+		}
+	}
+	else if(temporaryHead ->c == ">"){	
+		if(temporaryHead->next != NULL && temporaryHead->next->c == "="){
+			printf("14\n");		
+			encoder(temporaryHead->next->next, ofp);
+		}
+		else{
+			printf("13");		
+			encoder(temporaryHead->next, ofp);
+		}
+		
+	}
+	else if(temporaryHead ->c == "!="){	
+		printf("10\n");	
+		encoder(temporaryHead->next, ofp);
+	}
+	
 }
-*/
+
 void stringCopy(char *str1, char *str2, int length){
 	printf("stringCopy\n");
 	int i;
