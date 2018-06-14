@@ -1,0 +1,12 @@
+//input.txt
+1234 abcd ()//.';
+
+31234
+2 abcd
+15 (
+16 )
+7 /
+7 /
+19 .
+error Invalid symbol: '
+18 ;

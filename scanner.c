@@ -56,18 +56,28 @@ void scanner(char *fileName){
 	
 	listyString *inputHead, *newNode, *prevNode, *temporaryHead;
 	
+	if(fileName == NULL){
+			printf("Invalid file name");		
+	}
 	
 	inputHead = malloc(sizeof(listyString));
 		
 	ifp = fopen(fileName,"r");
 	ofp = fopen("outputFile.txt","w");
 	//ofp2 = ("r");
+	
+	if (ifp == NULL || ofp == NULL){
+		
+		printf("Invalid file pointers");
+	}
 
+	fprintf(ofp, "//%s\n",fileName);
+	
 	if ((buffer = fgetc(ifp)) != EOF){
 		
 		inputHead->c = buffer;
 		prevNode = inputHead;
-		//printf("inside while Input: %c\n",prevNode->c);
+		fprintf(ofp, "%c", buffer);
 	}
 	while((buffer = fgetc(ifp)) != EOF){		
 				
@@ -79,6 +89,7 @@ void scanner(char *fileName){
 		prevNode = newNode;
 		newNode = NULL;
 		//printf("inside while Input: %c\n",prevNode->c);
+		fprintf(ofp, "%c", buffer);
 	}
 	
 	
@@ -91,7 +102,12 @@ void scanner(char *fileName){
 		temporaryHead = temporaryHead->next;		
 	}
 	
+	fprintf(ofp,"\n\n");
+	
 	encoder(inputHead, ofp);
+	
+	fclose(ifp);
+	fclose(ofp);
 }
 
 void encoder(listyString* inputHead, FILE *ofp){
@@ -143,7 +159,7 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 	
 	if(inputHead == NULL){
 	
-		printf("inputHead NULL\n");
+		//printf("inputHead NULL\n");
 		return NULL;
 	}
 		
@@ -152,14 +168,14 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 		
 	temporaryHead = inputHead;
 	
-	printf("wordVarDecoder3\n");
+	//printf("wordVarDecoder3\n");
 	fflush(stdout);
 	
 	strLength = 0;
 		
 	while((isdigit(temporaryHead->c) != 0) || (isalpha(temporaryHead->c ) != 0)){
 		
-			printf("wordVarDecoder4\n");
+			//printf("wordVarDecoder4\n");
 			fflush(stdout);
 			temporaryHead = temporaryHead->next;	
 			strLength++;
@@ -175,11 +191,11 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 	}
 	else{
 		
-		printf("strLength = %d\n",strLength);
+		//printf("strLength = %d\n",strLength);
 		
 	}
 	
-	printf("wordVarDecoder5\n");
+	//printf("wordVarDecoder5\n");
 	fflush(stdout);
 	
 	bufferChar = malloc(strLength * sizeof(char));
@@ -188,7 +204,7 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 
 	for( i = 0; i < strLength; i++){
 		
-		printf("wordVarDecoder6\n");
+		//printf("wordVarDecoder6\n");
 		fflush(stdout);
 		bufferChar[i] = temporaryHead->c;
 		temporaryHead = temporaryHead->next;
@@ -197,22 +213,26 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 	}	
 	
 	if(strLength <= IDENTIFIER_MAX_LENGTH){
-		printf("wordVarDecoder7\n");
+		//printf("wordVarDecoder7\n");
 		fflush(stdout);
 		for(i = 0;i < TABLE_SIZE; i++){
 		
 			if(strcmp(bufferChar,table[i]) == 0){
 				printf("%d %s\n",i,bufferChar);
+				fprintf(ofp, "%d %s\n", i, bufferChar);
 				break;
 			}			
 		}		
 		
 		printf("2 %s\n",bufferChar);
+		fprintf(ofp, "2 %s\n", bufferChar);
 	}
 	else{
-			printf("wordVarDecoder8\n");
+			//printf("wordVarDecoder8\n");
 			fflush(stdout);
-			printf("error:Identifier too long %s",bufferChar);	
+			printf("error:Identifier too long %s",bufferChar);
+			fprintf(ofp, "error:Identifier too long %s", bufferChar);
+			//return temporaryHead;
 	}	
 	
 	return temporaryHead;
@@ -238,7 +258,7 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp){
 	
 	while((isdigit(temporaryHead->c) != 0) || (isalpha(temporaryHead->c ) != 0)){
 		
-			printf("intDecoder2\n");
+			//printf("intDecoder2\n");
 			fflush(stdout);
 			temporaryHead = temporaryHead->next;	
 			
@@ -255,7 +275,7 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp){
 	}
 	else{
 		
-		printf("strLength = %d\n",strLength);
+		//printf("strLength = %d\n",strLength);
 		
 	}
 	
@@ -265,7 +285,7 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp){
 	
 	for( i = 0; i < strLength; i++){
 
-		printf("intDecoder3\n");
+		//printf("intDecoder3\n");
 		fflush(stdout);
 		bufferInt[i] = temporaryHead->c;
 		temporaryHead = temporaryHead->next;
@@ -277,32 +297,36 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp){
 		if (isdigit(bufferInt[i]) ==  0){
 		
 			printf("error invalid character: %s\n", bufferInt);
-			return temporaryHead;		
+			fprintf(ofp, "error invalid character: %s\n", bufferInt);
+			//return temporaryHead;		
 		}
 	}
 	
 	if(strLength <= NUMBER_MAX_LENGTH){	
 	
-		printf("intDecoder4\n");
+		//printf("intDecoder4\n");
 		fflush(stdout);
 		printf("3");
+		fprintf(ofp, "3");
 		
 		for(i = 0;i < strLength; i++){
 			
-			printf("%c", bufferInt[i]);					
+			printf("%c", bufferInt[i]);
+			fprintf(ofp, "%c", bufferInt[i]);
 		}		
 		
 		printf("\n");
+		fprintf(ofp,"\n");
+		return temporaryHead;
 	}
 		
 	else{
 		
 		printf("ERROR:number too long ");
+		fprintf(ofp, "ERROR:number too long ");
 	}
 	
-	
 	return temporaryHead;
-	
 }
 
 listyString *symEncoder(listyString *inputHead, FILE *ofp){
@@ -332,6 +356,8 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 	if(isspace(*bufferSym) != 0){
 		printf("temporaryHead is space\n");
 		fflush(stdout);
+		
+		return temporaryHead->next;
 	}
 
 	else if(temporaryHead->next != NULL && strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,"!") == 0){
@@ -354,7 +380,7 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 		fflush(stdout);
 		nextBufferSym[0] = temporaryHead->next->c; 
 		
-		if(strcmp(nextBufferSym,"/") == 0){
+		if(strcmp(nextBufferSym,"*") == 0){
 			
 			while((temporaryHead->next != NULL) && (temporaryHead->next->next != NULL)){
 				
@@ -371,8 +397,16 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 		//printf("symDecoder7\n");
 		fflush(stdout);
 		if(strcmp(bufferSym,table[i]) == 0){
-			printf("%d %s\n", i, bufferSym);	
-		}				
+			
+			printf("%d %s\n", i, bufferSym);
+			fprintf(ofp, "%d %s\n", i, bufferSym);
+			return temporaryHead->next;
+		}						
 	}
-	return temporaryHead;
+	if(i == TABLE_SIZE){
+		
+		printf("error Invalid symbol: %s\n", bufferSym);
+		fprintf(ofp, "error Invalid symbol: %s\n", bufferSym);
+	}
+	return temporaryHead->next;
 }
