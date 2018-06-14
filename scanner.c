@@ -338,101 +338,37 @@ void intEncoder(listyString *inputHead, FILE *ofp){
 
 void symEncoder(listyString *inputHead, FILE *ofp){
 	printf("symDecoder");
+	int i = 0;
+	char *bufferSym;
 	listyString *temporaryHead;
-			
+				
 	temporaryHead = inputHead;
-	
-	if(temporary->Head == "//"){
 		
-		while (temporaryHead->next != NULL && temporary->c != "\n" ){
+	if(strcmp(temporaryHead->c,"<") == 0 || strcmp(temporaryHead->c,"<") == 0 || strcmp(temporaryHead->next->c,"!") == 0){
+		
+		if((temporaryHead->next != NULL) && (strcmp(temporaryHead->next->c,"=") == 0)){
 			
-			temporaryHead = temporaryHead->next;
-			
+			bufferSym = malloc(2 * sizeof(char));			
 		}
 		
-		encoder(temporaryHead->next, ofp);
+		bufferSym[o] = temporaryHead->c;
+		bufferSym[1] = temporaryHead->next->c;		
 	}
-	if(temporary->Head == "/*"){
 		
-		while (temporaryHead->next != NULL && temporaryHead->c != "*/" ){
+	if((temporaryHead-next != NULL) && (temporaryHead->Head == "/") && (temporaryHead-next->c == '*')){
+		
+		while ((temporaryHead->next != NULL) && (temporaryHead->c != "*") && (temporaryHead->c != "/") ){
 			
 			temporaryHead = temporaryHead->next;			
 		}
 		encoder(temporaryHead->next, ofp);
 	}
-	else if(temporaryHead ->c == "+"){		
-		printf("4\n");	
-		encoder(temporaryHead->next, ofp);
-	}	
-	else if(temporaryHead ->c == "-"){
-		printf("5\n");
-		encoder(temporaryHead->next, ofp);				
-	}	
-	else if(temporaryHead ->c == "*"){		
-		printf("6\n");	
-		encoder(temporaryHead->next, ofp);
-	}
-	else if(temporaryHead ->c == "/"){		
-		printf("7\n");		
-	}	
-	else if(temporaryHead ->c == "%"){		
-		printf("8\n");		
-	}	
-	else if(temporaryHead ->c == "="){		
-		printf("9\n");		
-		encoder(temporaryHead->next, ofp);
-	}	
-	else if(temporaryHead ->c == "!="){	
-		printf("10\n");		
-		encoder(temporaryHead->next, ofp);
-	}
-	else if(temporaryHead ->c == "<"){	
-		if(temporaryHead->next != NULL && temporaryHead->next->c == "="){
-			printf("12 \n");			
-			encoder(temporaryHead->next->next, ofp);
-		}
-		else{
-			printf("11\n");	
-			encoder(temporaryHead->next, ofp);
-		}
-	}
-	else if(temporaryHead ->c == ">"){	
-		if(temporaryHead->next != NULL && temporaryHead->next->c == "="){
-			printf("14\n");		
-			encoder(temporaryHead->next->next, ofp);
-		}
-		else{
-			printf("13");		
-			encoder(temporaryHead->next, ofp);
-		}
+	
+	for(i = 0; i < TABLE_SIZE; i++){
 		
-	}
-	else if(temporaryHead ->c == "!="){	
-		printf("10\n");	
-		encoder(temporaryHead->next, ofp);
-	}
-	
-}
-
-void stringCopy(char *str1, char *str2, int length){
-	printf("stringCopy\n");
-	int i;
-	
-	printf("str1: %s\n",str1);
-	
-	for(i = 0; i <= length; i++){
-				
-				str2[i] = str1[i];	
-			}
-			printf("str2: %s\n",str2);
-}
-
-void intCopy(int *str1, int *str2, int length){
-	printf("intCopy\n");
-	int i;
-	
-	for(i = 0; i <= length; i++){
-				
-				str2[i] = str1[i];
+		if(strcmp(temporaryHead->c,table[i]) == 0){
+				printf("%d %s\n",i,bufferChar);	
+				encoder(temporaryHead->next, ofp);
+			}				
 	}
 }
