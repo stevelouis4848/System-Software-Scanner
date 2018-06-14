@@ -265,7 +265,7 @@ void wordVarTable(listyString *temporaryHead, char *bufferChar,FILE *ofp, int le
 
 void intEncoder(listyString *inputHead, FILE *ofp){
 	
-	printf("intDecoder\n");
+	printf("intEncoder\n");
 	int i, j;
 	
 	char *bufferInt, *prevBufferInt;
