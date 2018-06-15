@@ -220,12 +220,14 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp){
 			if(strcmp(bufferChar,table[i]) == 0){
 				printf("%d %s\n",i,bufferChar);
 				fprintf(ofp, "%d %s\n", i, bufferChar);
-				break;
+				return temporaryHead;
 			}			
 		}		
 		
-		printf("2 %s\n",bufferChar);
-		fprintf(ofp, "2 %s\n", bufferChar);
+		if(i = TABLE_SIZE){
+			printf("2 %s\n",bufferChar);
+			fprintf(ofp, "2 %s\n", bufferChar);
+		}
 	}
 	else{
 			//printf("wordVarDecoder8\n");
@@ -360,7 +362,7 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 		return temporaryHead->next;
 	}
 
-	else if(temporaryHead->next != NULL && strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,"!") == 0){
+	else if(temporaryHead->next != NULL && strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,">") == 0 || strcmp(bufferSym,"!") == 0){
 		printf("symDecoder5\n");
 		fflush(stdout);
 		nextBufferSym[0] = temporaryHead->next->c;
@@ -382,13 +384,35 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 		
 		if(strcmp(nextBufferSym,"*") == 0){
 			
-			while((temporaryHead->next != NULL) && (temporaryHead->next->next != NULL)){
+			printf("found begining of comment\n");
+			temporaryHead = temporaryHead->next;
+					
+			while(temporaryHead->next != NULL){
 				
-				//while ((temporaryHead->c != "*") && (temporaryHead->c != "/") ){
-			
-					temporaryHead = temporaryHead->next;			
-				//}	
+				bufferSym[0] = temporaryHead->next->c;
+				bufferSym[1] = '\0';
+				
+				printf("In comment: %s\n",bufferSym);
+				
+				if((strcmp(bufferSym, "*") == 0) && (temporaryHead->next != NULL)){
+					
+					temporaryHead = temporaryHead->next;
+					
+					bufferSym[1] = temporaryHead->next->c;
+					
+					if(strcmp(bufferSym, "*/") == 0){
+						
+						temporaryHead = temporaryHead->next;
+						
+						printf("found end of comment\n");
+						return temporaryHead->next;	
+						
+					}		
+				}									
+				temporaryHead = temporaryHead->next;
 			}
+			printf("Invalid comment\n");
+			return NULL;
 		}
 	}
 	

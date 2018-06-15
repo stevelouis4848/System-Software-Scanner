@@ -1,1 +1,1 @@
-1234 abcd ()//.';
+2 variable

@@ -1,12 +1,16 @@
 //input.txt
-1234 abcd ()//.';
+/*ignore this hello*/ 
 
-31234
-2 abcd
-15 (
-16 )
+3-3
+
+//this is a trick
+
+33
+5 -
+33
 7 /
 7 /
-19 .
-error Invalid symbol: '
-18 ;
+2 this
+2 is
+2 a
+2 trick
