@@ -11,13 +11,14 @@
 int IDENTIFIER_MAX_LENGTH = 11;
 int NUMBER_MAX_LENGTH = 5;
 int TABLE_SIZE = 34;
+int error_halt = 0;
 
 typedef struct listyString{
 							int c;
 							struct listyString *next;						
 }listyString;
 
-char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "%", "=", "!=", "<", "<=", ">", ">=",
+char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "odd", "=", "!=", "<", "<=", ">", ">=",
 					"(", ")", ",", ";", ".", ":=", "begin", "end", "if", "then", "while", "do",
 					"call", "const", "var", "procedure", "write", "read", "else"
 				};
@@ -84,37 +85,54 @@ void scanner(char *fileName){
 		fprintf(ofp, "%c", buffer);
 	}
 	
-	
-	prevNode->next = NULL;
-	temporaryHead = inputHead;
-	
-	while(temporaryHead != NULL){
-		
-		temporaryHead = temporaryHead->next;		
-	}
-	
-	fprintf(ofp,"\n\nLexeme Table:\nLexme\t\ttoken type\n" );
+	fprintf(ofp,"\n\nLexeme Table:\nlexeme\t\ttoken type\n" );
 	
 	encoder(inputHead, ofp, ofp2);
 	
-	fclose(ofp2);
-	
-	ofp2 = fopen("outputFile2.txt","r");
-	
-	fprintf(ofp,"\nLexeme List\n" );
-	
-	while((buffer = fgetc(ofp2)) != EOF){
-				
-			fprintf(ofp,"%c",buffer);				
+	if(error_halt == 0){
+			
+		fclose(ofp2);
+		
+		ofp2 = fopen("outputFile2.txt","r");
+		
+		fprintf(ofp,"\nLexeme List:\n" );
+		
+		while((buffer = fgetc(ofp2)) != EOF){
+					
+				fprintf(ofp,"%c",buffer);				
+		}
+		fprintf(ofp,"\n");	
+		fclose(ofp);
+		
+		ofp = fopen("outputFile.txt", "r");
+		
+		while((buffer = fgetc(ofp)) != EOF){
+					
+				printf("%c",buffer);			
+		}
 	}
-	fprintf(ofp,"\n");	
-	fclose(ofp);
 	
-	ofp = fopen("outputFile.txt", "r");
-	
-	while((buffer = fgetc(ofp)) != EOF){
+	else{
+		fclose(ifp);
+		fclose(ofp);
+		remove("outputFile.txt");
+		
+		ifp = fopen(fileName,"r");
+		ofp = fopen("outputFile.txt","w");
+		
+		ifp = fopen(fileName,"r");
+		
+		fprintf(ofp, "Source Program:%s\n",fileName);
+		printf("Source Program:%s\n",fileName);
+		
+		
+		while((buffer = fgetc(ifp)) != EOF){		
 				
-			printf("%c",buffer);			
+		fprintf(ofp, "%c", buffer);
+		printf("%c",buffer);
+		}
+		printf("\nError: Invalid symbol.");
+		fprintf(ofp,"\nError: Invalid symbol.");
 	}
 	
 	fclose(ifp);
@@ -200,7 +218,7 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 		
 			if(strcmp(bufferChar,table[i]) == 0){
 				
-				fprintf(ofp, "%s\t\t %d\n", bufferChar, i);
+				fprintf(ofp, "%s\t\t%d\n", bufferChar, i);
 				fprintf(ofp2, "%d ", i);
 				return temporaryHead;
 			}			
@@ -213,6 +231,7 @@ listyString *wordVarEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 	}
 	else{
 			fprintf(ofp, "error:Identifier too long %s", bufferChar);
+			error_halt = 1;
 			return NULL;
 	}	
 }
@@ -264,7 +283,8 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 		
 		if (isdigit(bufferInt[i]) ==  0){
 			
-			fprintf(ofp, "error invalid character: %s\n", bufferInt);
+			fprintf(ofp, "Error: Invalid symbol.");
+			error_halt = 1;
 			return NULL;		
 		}
 	}
@@ -286,7 +306,8 @@ listyString *intEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 		
 	else{
 		
-		fprintf(ofp, "ERROR:number too long ");
+		fprintf(ofp, "Error: Invalid symbol.");
+		error_halt = 1;
 		return NULL;
 	}
 	
@@ -356,7 +377,8 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 				}									
 				temporaryHead = temporaryHead->next;
 			}
-			fprintf(ofp, "Invalid comment\n");
+			fprintf(ofp, "Error: Invalid symbol.");
+			error_halt = 1;
 			return NULL;
 		}
 	}
@@ -365,11 +387,12 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 		
 		if(strcmp(bufferSym,table[i]) == 0){
 	
-			fprintf(ofp, "%s\t\t %d\n",bufferSym, i);
+			fprintf(ofp, "%s\t\t%d\n",bufferSym, i);
 			fprintf(ofp2, "%d ", i);
 			return temporaryHead->next;
 		}						
 	}
-	fprintf(ofp, "error Invalid symbol: %s\n", bufferSym);
+	fprintf(ofp, "Error: Invalid symbol.");
+	error_halt = 1;
 	return NULL;
 }
