@@ -26,10 +26,10 @@ typedef struct listyString{
 }listyString;
 
 typedef struct lexToken{
-							char *lexme
+							char *lexme;
 							int token;
 							int error;
-							struct lexToken*next;						
+							struct lexToken *next;						
 }lexToken;
 
 char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "%", "=", "!=", "<", "<=", ">", ">=",
@@ -38,12 +38,12 @@ char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "%", "=", "!=", "<", "
 				};
 					
 void scanner(char *fileName);
-void encoder(listyString* inputHead, lexToken *lexTokenHead, FILE *ofp);
-listyString *intEncoder(listyString *inputHead, FILE *ofp);
+void encoder(listyString* inputHead, FILE *ofp);
+listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
 listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
 listyString *symEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
-void *strorelexValue(lexToken *lexTokenHead ,char* lexme, int token, int error);
-void printFunction(lexToken *lexTokenHead, FILE ofp, int type);
+void stroreLexTokenValue(lexToken *lexTokenHead ,char *lexme, int token, int error);
+void printFunction(lexToken *lexTokenHead, FILE *ofp, int type);
 
 int main(int argc, char **argv){
 	
@@ -125,7 +125,7 @@ void encoder(listyString* inputHead, FILE *ofp){
 	char *bufferChar, *prevBufferChar;
 	int *bufferInt, *prevbufferInt;
 	lexToken *lexTokenHead;
-	lextokenHead = malloc(sizeof(lexToken));
+	lexTokenHead = malloc(sizeof(lexToken));
 	
 	if(inputHead == NULL){
 			
@@ -233,7 +233,7 @@ listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE
 		
 			if(strcmp(bufferChar,table[i]) == 0){
 				
-				storeLexTokenValue(lexTokenHead, bufferChar, i,0);
+				stroreLexTokenValue(lexTokenHead, bufferChar, i,0);
 				printf("%d %s\n",i,bufferChar);
 				//fprintf(ofp, "%d %s\n", i, bufferChar);
 				return temporaryListyHead;
@@ -241,7 +241,7 @@ listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE
 		}		
 		
 		if(i = TABLE_SIZE){
-			storeLexTokenValue(lexTokenHead, bufferChar, 2,0);
+			stroreLexTokenValue(lexTokenHead, bufferChar, 2,0);
 			printf("2 %s\n",bufferChar);
 			//fprintf(ofp, "2 %s\n", bufferChar);
 		}
@@ -250,7 +250,7 @@ listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE
 			//printf("wordVarDecoder8\n");
 			fflush(stdout);
 			
-			storeLexTokenValue(lexTokenHead, bufferChar, 2,1);
+			stroreLexTokenValue(lexTokenHead, bufferChar, 2,1);
 			printf("error:Identifier too long %s",bufferChar);
 			//fprintf(ofp, "error:Identifier too long %s", bufferChar);
 			//return temporaryListyHead;
@@ -317,7 +317,7 @@ listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *of
 		
 		if (isdigit(bufferInt[i]) ==  0){
 		
-			storeLexTokenValue(lexTokenHead, bufferChar, 3,3);
+			stroreLexTokenValue(lexTokenHead, bufferInt, 3,3);
 			printf("error invalid character: %s\n", bufferInt);
 			//fprintf(ofp, "error invalid character: %s\n", bufferInt);
 			//return temporaryListyHead;		
@@ -337,7 +337,7 @@ listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *of
 			//fprintf(ofp, "%c", bufferInt[i]);
 		}		
 		
-		storeLexTokenValue(lexTokenHead, bufferInt, 3,0);
+		stroreLexTokenValue(lexTokenHead, bufferInt, 3,0);
 		
 		printf("\n");
 		//fprintf(ofp,"\n");
@@ -345,7 +345,7 @@ listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *of
 	}
 		
 	else{
-		storeLexTokenValue(lexTokenHead, bufferInt, 3,4);
+		stroreLexTokenValue(lexTokenHead, bufferInt, 3,4);
 		printf("ERROR:number too long ");
 		//fprintf(ofp, "ERROR:number too long ");
 	}
@@ -353,7 +353,7 @@ listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *of
 	return temporaryListyHead;
 }
 
-listyString *symEncoder(listyString *inputHead, FILE *ofp){
+listyString *symEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp){
 	printf("symDecoder\n");
 	fflush(stdout);
 	
@@ -444,69 +444,65 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp){
 		fflush(stdout);
 		if(strcmp(bufferSym,table[i]) == 0){
 			
-			storeLexTokenValue(lexTokenHead, bufferSym, i,0);
+			stroreLexTokenValue(lexTokenHead, bufferSym, i,0);
 			printf("%d %s\n", i, bufferSym);
 			//fprintf(ofp, "%d %s\n", i, bufferSym);
 			return temporaryListyHead->next;
 		}						
 	}
 	if(i == TABLE_SIZE){
-		storeLexTokenValue(lexTokenHead, bufferSym, i,5);
+		stroreLexTokenValue(lexTokenHead, bufferSym, i,5);
 		printf("error Invalid symbol: %s\n", bufferSym);
 		//fprintf(ofp, "error Invalid symbol: %s\n", bufferSym);
 	}
 	return temporaryListyHead->next;
 }
 
- void *strorelexValue(lexToken *lexTokenHead ,char* lexme, int token, int error){
+ void stroreLexTokenValue(lexToken *lexTokenHead ,char* lexme, int token, int error){
 
 	if(lexTokenHead == NULL){
 		
-		printf("strorelexValueerror lextoken head null\n");	
+		printf("stroreLexTokenValueerror lexToken head null\n");	
 		exit(0);
 	}
 	
 	while (lexTokenHead != NULL){
 				
-				lexTokenHead = lexTokenHead->next;				
-			}
+		lexTokenHead = lexTokenHead->next;				
+	}
 			
-			lexTokenHead->lexme malloc(sizeof(lexToken));
-			lexTokenHead->lexme = malloc(sizeof(char));
-			
-			lexTokenHead->lexme = lexme;
-			lexTokenHead->token = token;
-			lexTokenHead->error = error;
+	lexTokenHead->lexme = malloc(sizeof(lexToken));
+	lexTokenHead->lexme = malloc(sizeof(char));
+	
+	lexTokenHead->lexme = lexme;
+	lexTokenHead->token = token;
+	lexTokenHead->error = error;
 }
 
-void printFunction(lexToken *lexTokenHead, FILE ofp, int type){
-	
-	lexToken *lexTokenHead;
-	lexTokenHead = lexTokenHead;
+void printFunction(lexToken *lexTokenHead, FILE *ofp, int type){
 	
 	if(lexTokenHead == NULL){
 		
 		printf(" printFunction lexTokenHead is null\n");	
-		exit(0;)
+		exit(0);
 	}
-	
-	
+		
 	if(type == 1){
 		
 		while(lexTokenHead != NULL){
 			
 			
-			if(lextokenHead->error > 0){
+			if(lexTokenHead->error > 0){
 				
 				/*
 				switch(lexTokenHead->error){
 					
 					case (1):
 						
-					break;										
+					break;						
 				}
 				*/
-				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token)
+				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token);
 			}
 				
 			else{
@@ -520,7 +516,7 @@ void printFunction(lexToken *lexTokenHead, FILE ofp, int type){
 		while(lexTokenHead != NULL){
 			
 			
-			if(lextokenHead->error > 0){
+			if(lexTokenHead->error > 0){
 				/*
 				switch(lexTokenHead->error){
 					
@@ -529,11 +525,11 @@ void printFunction(lexToken *lexTokenHead, FILE ofp, int type){
 					break;										
 				}
 				*/
-				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token)
+				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token);
 			}
 				
 			else{
-					fprintf(ofp, "%d ",lexTokenHead->lexme, lexTokenHead->token);
+					fprintf(ofp, "%d ", lexTokenHead->token);
 					
 					if(lexTokenHead->token == 2){
 						
