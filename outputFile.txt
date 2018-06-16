@@ -1,16 +1,12 @@
 //input.txt
-/*ignore this hello*/ 
+23 42 44
 
-3-3
 
-//this is a trick
 
-33
-5 -
-33
-7 /
-7 /
-2 this
-2 is
-2 a
-2 trick
+ Lexeme Table:
+Lexme		token type
+23		3
+42		3
+44		3
+Lexeme List
+3 23 3 42 3 44 

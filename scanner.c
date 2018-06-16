@@ -3,13 +3,6 @@
 // Assignment: Homework #2 (Scanner)
 // 06/15/2018
 
-/*
-README
-
-	# How to run
-
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,25 +18,16 @@ typedef struct listyString{
 							struct listyString *next;						
 }listyString;
 
-typedef struct lexToken{
-							char *lexme;
-							int token;
-							int error;
-							struct lexToken *next;						
-}lexToken;
-
 char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "%", "=", "!=", "<", "<=", ">", ">=",
 					"(", ")", ",", ";", ".", ":=", "begin", "end", "if", "then", "while", "do",
 					"call", "const", "var", "procedure", "write", "read", "else"
 				};
 					
 void scanner(char *fileName);
-void encoder(listyString* inputHead, FILE *ofp);
-listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
-listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
-listyString *symEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp);
-void stroreLexTokenValue(lexToken *lexTokenHead ,char *lexme, int token, int error);
-void printFunction(lexToken *lexTokenHead, FILE *ofp, int type);
+void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
+listyString *intEncoder(listyString *inputHead,FILE *ofp, FILE *ofp2);
+listyString *wordVarEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2);
+listyString *symEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2);
 
 int main(int argc, char **argv){
 	
@@ -62,9 +46,8 @@ void scanner(char *fileName){
 	printf("scanner\n");
 	FILE *ifp, *ofp, *ofp2;
 	int buffer;
+	listyString *inputHead, *newNode, *prevNode, *temporaryHead;
 	
-	listyString *inputHead, *newNode, *prevNode, *temporaryListyHead;
-
 	if(fileName == NULL){
 			printf("Invalid file name");		
 	}
@@ -73,7 +56,7 @@ void scanner(char *fileName){
 		
 	ifp = fopen(fileName,"r");
 	ofp = fopen("outputFile.txt","w");
-	//ofp2 = ("r");
+	ofp2 = fopen("outputFile2.txt","w");
 	
 	if (ifp == NULL || ofp == NULL){
 		
@@ -103,36 +86,49 @@ void scanner(char *fileName){
 	
 	
 	prevNode->next = NULL;
-	temporaryListyHead = inputHead;
+	temporaryHead = inputHead;
 	
-	while(temporaryListyHead != NULL){
+	while(temporaryHead != NULL){
 		
-		printf("inside while Input: %c\n",temporaryListyHead->c);
-		temporaryListyHead = temporaryListyHead->next;		
+		printf("inside while Input: %c\n",temporaryHead->c);
+		temporaryHead = temporaryHead->next;		
 	}
 	
-	fprintf(ofp,"\n\n");
+	fprintf(ofp,"\n Lexeme Table:\nLexme\t\ttoken type\n" );
 	
-	encoder(inputHead, ofp);
+	encoder(inputHead, ofp, ofp2);
+	
+	fclose(ofp2);
+	
+	ofp2 = fopen("outputFile2.txt","r");
+	
+	fprintf(ofp,"\n\n\nLexeme List\n" );
+	
+	while((buffer = fgetc(ofp2)) != EOF){
+				
+			fprintf(ofp,"%c",buffer);
+				
+	}
 	
 	fclose(ifp);
 	fclose(ofp);
+	fclose(ofp2);
+	
+	remove("outputFile2.txt");
 }
 
-void encoder(listyString* inputHead, FILE *ofp){
+void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2){
 	printf("encoder\n");
 	int i, j;
 	char *bufferChar, *prevBufferChar;
 	int *bufferInt, *prevbufferInt;
-	lexToken *lexTokenHead;
-	lexTokenHead = malloc(sizeof(lexToken));
 	
 	if(inputHead == NULL){
 			
 			printf("listyString is NULL\n");
 			fflush( stdout );
 			exit(0);
-	}
+		}
 	
 	while(inputHead != NULL){
 		
@@ -140,61 +136,49 @@ void encoder(listyString* inputHead, FILE *ofp){
 				
 			printf("wordVarEncoder\n");
 			fflush( stdout );
-			inputHead = wordVarEncoder(inputHead, lexTokenHead, ofp);
+			inputHead = wordVarEncoder(inputHead, ofp, ofp2);
 		}
 		else if(isdigit(inputHead->c ) != 0){
 			
 			printf("intEncoder\n");
 			fflush( stdout );
-			inputHead = intEncoder(inputHead, lexTokenHead, ofp);
+			inputHead = intEncoder(inputHead, ofp, ofp2);
 		}
 		
 		else{
 			
 			printf("SymEncoder\n");
 			fflush( stdout );
-			inputHead = symEncoder(inputHead, lexTokenHead, ofp);	
+			inputHead = symEncoder(inputHead, ofp, ofp2);	
 			
 		}	
 	}	
-	
-	printFunction(lexTokenHead, ofp, 1);
-	printFunction(lexTokenHead, ofp, 2);
 }
 
-listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp){
+listyString *wordVarEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 	
 	printf("wordVarDecoder1\n");
 	fflush(stdout);
 	int i = 0, j = 0, strLength;
 	
 	char *bufferChar;
-	listyString *temporaryListyHead;
+	listyString *temporaryHead;
 	
 	if(inputHead == NULL){
 	
-		//printf("inputHead NULL\n");
 		return NULL;
 	}
-		
-	printf("wordVarDecoder2\n");
-	fflush(stdout);
-		
-	temporaryListyHead = inputHead;
-	
-	//printf("wordVarDecoder3\n");
-	fflush(stdout);
+				
+	temporaryHead = inputHead;
 	
 	strLength = 0;
 		
-	while((isdigit(temporaryListyHead->c) != 0) || (isalpha(temporaryListyHead->c ) != 0)){
+	while((isdigit(temporaryHead->c) != 0) || (isalpha(temporaryHead->c ) != 0)){
 		
-			//printf("wordVarDecoder4\n");
-			fflush(stdout);
-			temporaryListyHead = temporaryListyHead->next;	
+			temporaryHead = temporaryHead->next;	
 			strLength++;
 			
-			if(temporaryListyHead == NULL){	
+			if(temporaryHead == NULL){	
 				break;		
 			}			
 	}
@@ -203,89 +187,68 @@ listyString *wordVarEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE
 		
 		return NULL;
 	}
-	else{
-		
-		//printf("strLength = %d\n",strLength);
-		
-	}
-	
-	//printf("wordVarDecoder5\n");
-	fflush(stdout);
 	
 	bufferChar = malloc(strLength * sizeof(char));
-	temporaryListyHead = inputHead;
+	temporaryHead = inputHead;
 	
 
 	for( i = 0; i < strLength; i++){
 		
-		//printf("wordVarDecoder6\n");
-		fflush(stdout);
-		bufferChar[i] = temporaryListyHead->c;
-		temporaryListyHead = temporaryListyHead->next;
-		//printf("bufferChar: %c\n",bufferChar[i]);
-		fflush(stdout);
+		bufferChar[i] = temporaryHead->c;
+		temporaryHead = temporaryHead->next;
 	}	
 	
 	if(strLength <= IDENTIFIER_MAX_LENGTH){
-		//printf("wordVarDecoder7\n");
-		fflush(stdout);
 		for(i = 0;i < TABLE_SIZE; i++){
 		
 			if(strcmp(bufferChar,table[i]) == 0){
 				
-				stroreLexTokenValue(lexTokenHead, bufferChar, i,0);
-				printf("%d %s\n",i,bufferChar);
-				//fprintf(ofp, "%d %s\n", i, bufferChar);
-				return temporaryListyHead;
+				fprintf(ofp, "%d\t\t %s\n", i, bufferChar);
+				fprintf(ofp2, "%d ", i);
+				return temporaryHead;
 			}			
 		}		
 		
 		if(i = TABLE_SIZE){
-			stroreLexTokenValue(lexTokenHead, bufferChar, 2,0);
-			printf("2 %s\n",bufferChar);
-			//fprintf(ofp, "2 %s\n", bufferChar);
+			
+			fprintf(ofp, "%s\t\t2\n", bufferChar);			
+			fprintf(ofp2, "2 %s", bufferChar);
 		}
 	}
 	else{
-			//printf("wordVarDecoder8\n");
-			fflush(stdout);
-			
-			stroreLexTokenValue(lexTokenHead, bufferChar, 2,1);
-			printf("error:Identifier too long %s",bufferChar);
-			//fprintf(ofp, "error:Identifier too long %s", bufferChar);
-			//return temporaryListyHead;
+			fprintf(ofp, "error:Identifier too long %s", bufferChar);
+			exit(0);
 	}	
 	
-	return temporaryListyHead;
+	return temporaryHead;
 }
 
-listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp){
+listyString *intEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
 	
 	printf("intDecoder\n");
 	fflush(stdout);
 	int i, j,strLength;
 	
 	char *bufferInt;
-	listyString *temporaryListyHead;
+	listyString *temporaryHead;
 	
 	if(inputHead == NULL){
 		
 		return NULL;
 	}
 	
-	temporaryListyHead = inputHead;
+	temporaryHead = inputHead;
 	
 	strLength = 0;
 	
-	while((isdigit(temporaryListyHead->c) != 0) || (isalpha(temporaryListyHead->c ) != 0)){
+	while((isdigit(temporaryHead->c) != 0) || (isalpha(temporaryHead->c ) != 0)){
 		
-			//printf("intDecoder2\n");
-			fflush(stdout);
-			temporaryListyHead = temporaryListyHead->next;	
+			
+			temporaryHead = temporaryHead->next;	
 			
 			strLength++;
 			
-			if(temporaryListyHead == NULL){	
+			if(temporaryHead == NULL){	
 				break;		
 			}			
 	}
@@ -294,248 +257,132 @@ listyString *intEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *of
 		
 		return NULL;
 	}
-	else{
-		
-		//printf("strLength = %d\n",strLength);
-		
-	}
 	
-	temporaryListyHead = inputHead;
+	temporaryHead = inputHead;
 
 	bufferInt = malloc(strLength * sizeof(char));
 	
 	for( i = 0; i < strLength; i++){
 
-		//printf("intDecoder3\n");
-		fflush(stdout);
-		bufferInt[i] = temporaryListyHead->c;
-		temporaryListyHead = temporaryListyHead->next;
-		fflush(stdout);
+		bufferInt[i] = temporaryHead->c;
+		temporaryHead = temporaryHead->next;
 	}	
 	
 	for(i = 0; i < strLength; i++){
 		
 		if (isdigit(bufferInt[i]) ==  0){
-		
-			stroreLexTokenValue(lexTokenHead, bufferInt, 3,3);
-			printf("error invalid character: %s\n", bufferInt);
-			//fprintf(ofp, "error invalid character: %s\n", bufferInt);
-			//return temporaryListyHead;		
+			
+			fprintf(ofp, "error invalid character: %s\n", bufferInt);
+			exit(0);
+			return temporaryHead;		
 		}
 	}
 	
 	if(strLength <= NUMBER_MAX_LENGTH){	
-	
-		//printf("intDecoder4\n");
-		fflush(stdout);
-		printf("3");
-		//fprintf(ofp, "3");
+		
+		fprintf(ofp2, "3 ");
 		
 		for(i = 0;i < strLength; i++){
 			
-			printf("%c", bufferInt[i]);
-			//fprintf(ofp, "%c", bufferInt[i]);
-		}		
+			fprintf(ofp, "%c", bufferInt[i]);
+			fprintf(ofp2, "%c", bufferInt[i]);
+		}				
+		fprintf(ofp2, " ");
+		fprintf(ofp, "\t\t3\n");
 		
-		stroreLexTokenValue(lexTokenHead, bufferInt, 3,0);
-		
-		printf("\n");
-		//fprintf(ofp,"\n");
-		return temporaryListyHead;
+		return temporaryHead;
 	}
 		
 	else{
-		stroreLexTokenValue(lexTokenHead, bufferInt, 3,4);
-		printf("ERROR:number too long ");
-		//fprintf(ofp, "ERROR:number too long ");
+		
+		fprintf(ofp, "ERROR:number too long ");
+		return(0);
 	}
 	
-	return temporaryListyHead;
+	return temporaryHead;
 }
 
-listyString *symEncoder(listyString *inputHead, lexToken *lexTokenHead, FILE *ofp){
-	printf("symDecoder\n");
-	fflush(stdout);
-	
+listyString *symEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2){
+
 	int i = 0;
 	char *bufferSym, *nextBufferSym;;
-	listyString *temporaryListyHead;
+	listyString *temporaryHead;
 				
-	temporaryListyHead = inputHead;
+	temporaryHead = inputHead;
 		
-	printf("symDecoder2\n");
-	fflush(stdout);
 	bufferSym = malloc(2 * sizeof(char));
 	nextBufferSym = malloc(2 * sizeof(char));
 	
-	printf("symDecoder3\n");
-	fflush(stdout);
-	
-	bufferSym[0] = temporaryListyHead->c;
+	bufferSym[0] = temporaryHead->c;
 	bufferSym[1] = '\0';
 	
-	printf("symDecoder4\n");
-	fflush(stdout);
-	
 	if(isspace(*bufferSym) != 0){
-		printf("temporaryListyHead is space\n");
-		fflush(stdout);
-		
-		return temporaryListyHead->next;
+	
+		return temporaryHead->next;
 	}
 
-	else if(temporaryListyHead->next != NULL && strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,">") == 0 || strcmp(bufferSym,"!") == 0){
-		printf("symDecoder5\n");
-		fflush(stdout);
-		nextBufferSym[0] = temporaryListyHead->next->c;
+	else if(temporaryHead->next != NULL && strcmp(bufferSym,"<") == 0 || strcmp(bufferSym,">") == 0 || strcmp(bufferSym,"!") == 0){
+
+		nextBufferSym[0] = temporaryHead->next->c;
 		nextBufferSym[1] = '\0';
 		
 		
 		if(strcmp(nextBufferSym,"=") == 0){
 			
 			bufferSym[1] = nextBufferSym[0];
-			temporaryListyHead = temporaryListyHead->next;
+			temporaryHead = temporaryHead->next;
 		}				
 	}
 		
-	else if((temporaryListyHead->next != NULL) && strcmp(bufferSym,"/") == 0){
+	else if((temporaryHead->next != NULL) && strcmp(bufferSym,"/") == 0){
 		
-		printf("symDecoder6\n");
-		fflush(stdout);
-		nextBufferSym[0] = temporaryListyHead->next->c; 
+		nextBufferSym[0] = temporaryHead->next->c; 
 		
 		if(strcmp(nextBufferSym,"*") == 0){
-			
-			printf("found begining of comment\n");
-			temporaryListyHead = temporaryListyHead->next;
+
+			temporaryHead = temporaryHead->next;
 					
-			while(temporaryListyHead->next != NULL){
+			while(temporaryHead->next != NULL){
 				
-				bufferSym[0] = temporaryListyHead->next->c;
+				bufferSym[0] = temporaryHead->next->c;
 				bufferSym[1] = '\0';
 				
-				printf("In comment: %s\n",bufferSym);
 				
-				if((strcmp(bufferSym, "*") == 0) && (temporaryListyHead->next != NULL)){
+				if((strcmp(bufferSym, "*") == 0) && (temporaryHead->next != NULL)){
 					
-					temporaryListyHead = temporaryListyHead->next;
+					temporaryHead = temporaryHead->next;
 					
-					bufferSym[1] = temporaryListyHead->next->c;
+					bufferSym[1] = temporaryHead->next->c;
 					
 					if(strcmp(bufferSym, "*/") == 0){
 						
-						temporaryListyHead = temporaryListyHead->next;
+						temporaryHead = temporaryHead->next;
 						
-						printf("found end of comment\n");
-						return temporaryListyHead->next;	
+						return temporaryHead->next;	
 						
 					}		
 				}									
-				temporaryListyHead = temporaryListyHead->next;
+				temporaryHead = temporaryHead->next;
 			}
-			printf("Invalid comment\n");
-			return NULL;
+			fprintf(ofp, "Invalid comment\n");
+			exit(0);
 		}
 	}
 	
 	for(i = 0; i < TABLE_SIZE; i++){
 		
-		//printf("symDecoder7\n");
-		fflush(stdout);
 		if(strcmp(bufferSym,table[i]) == 0){
-			
-			stroreLexTokenValue(lexTokenHead, bufferSym, i,0);
-			printf("%d %s\n", i, bufferSym);
-			//fprintf(ofp, "%d %s\n", i, bufferSym);
-			return temporaryListyHead->next;
+	
+			fprintf(ofp, "%s\t\t %d\n",bufferSym, i);
+			fprintf(ofp2, "%d ", i);
+			return temporaryHead->next;
 		}						
 	}
 	if(i == TABLE_SIZE){
-		stroreLexTokenValue(lexTokenHead, bufferSym, i,5);
+		
 		printf("error Invalid symbol: %s\n", bufferSym);
-		//fprintf(ofp, "error Invalid symbol: %s\n", bufferSym);
-	}
-	return temporaryListyHead->next;
-}
-
- void stroreLexTokenValue(lexToken *lexTokenHead ,char* lexme, int token, int error){
-
-	if(lexTokenHead == NULL){
-		
-		printf("stroreLexTokenValueerror lexToken head null\n");	
+		fprintf(ofp, "error Invalid symbol: %s\n", bufferSym);
 		exit(0);
 	}
-	
-	while (lexTokenHead != NULL){
-				
-		lexTokenHead = lexTokenHead->next;				
-	}
-			
-	lexTokenHead->lexme = malloc(sizeof(lexToken));
-	lexTokenHead->lexme = malloc(sizeof(char));
-	
-	lexTokenHead->lexme = lexme;
-	lexTokenHead->token = token;
-	lexTokenHead->error = error;
-}
-
-void printFunction(lexToken *lexTokenHead, FILE *ofp, int type){
-	
-	if(lexTokenHead == NULL){
-		
-		printf(" printFunction lexTokenHead is null\n");	
-		exit(0);
-	}
-		
-	if(type == 1){
-		
-		while(lexTokenHead != NULL){
-			
-			
-			if(lexTokenHead->error > 0){
-				
-				/*
-				switch(lexTokenHead->error){
-					
-					case (1):
-						
-					break;						
-				}
-				*/
-				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token);
-			}
-				
-			else{
-
-					fprintf(ofp, "%s \t %d\n",lexTokenHead->lexme, lexTokenHead->token);
-			}		
-		}
-	}
-	else if(type == 2){
-		
-		while(lexTokenHead != NULL){
-			
-			
-			if(lexTokenHead->error > 0){
-				/*
-				switch(lexTokenHead->error){
-					
-					case (1):
-						
-					break;										
-				}
-				*/
-				fprintf(ofp, "printFunction error:%s \t %d\n", lexTokenHead->lexme, lexTokenHead->token);
-			}
-				
-			else{
-					fprintf(ofp, "%d ", lexTokenHead->token);
-					
-					if(lexTokenHead->token == 2){
-						
-						fprintf(ofp, "%s ",lexTokenHead->lexme);
-					}
-			}			
-		}		
-	}		
+	return temporaryHead->next;
 }
